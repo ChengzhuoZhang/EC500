@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Homework One</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/demo.css" />
+  </head>
+  <body>
+    <h1>Homework One</h1>
+    <script src="js/md5.js"></script>
+    <form>
+      <p>
+        <label for="password">Input Your Password</label>
+        <textarea rows="3" id="password"></textarea>
+      </p>
+      <p>
+        <label for="salt">Input Your Salt</label>
+        <textarea rows="3" id="salt"></textarea>
+      </p>
+
+        <button
+          type="submit"
+          id="send"
+          onclick="isRight()"
+        >
+          Send
+        </button>
+      </p>
+    </form>
+    <script>
+      let url = 'https://agile.bu.edu/ec500_scripts/redis.php'
+
+      async function isRight() {
+        let passward = document.getElementById('password').value
+        let salt = document.getElementById('salt').value
+        let pwdBySalt = passward + salt
+        let pwdByMd5 = md5(pwdBySalt)
+        console.log(pwdByMd5);
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            "salt": salt,
+            "hash": pwdByMd5,
+            "message": 'GET'
+          })
+        })
+        // .then(res => console.log(res))
+        .then(res => alert('Your request has been processed. Result:' + res.statusText))
+        .catch(e => console.log(e))
+      }
+      
+    </script>
+  </body>
+</html>
